@@ -1,4 +1,3 @@
-require "fileutils"
 require "coveralls/rake/task"
 
 namespace :run_rspec do
@@ -137,7 +136,7 @@ namespace :examples do
   #   example_type[:options] << " #{REQUIRED_GENERATOR_OPTIONS}" # space is important
   # end
 
-  # Define tasks for generating each example type
+  # Dynamically define tasks for generating each example type
   EXAMPLE_TYPES.each do |example_type|
     desc "Generate #{example_type[:name]} example. Pass 1 to also run npm install (defaults to false)"
     task "gen_#{example_type[:name]}" do
@@ -156,7 +155,7 @@ namespace :examples do
     end
   end
 
-  # Define tasks for deleting each example type folder
+  # Dynamically define tasks for deleting each example type folder
   EXAMPLE_TYPES.each do |example_type|
     desc "Delete #{example_type[:name]} example"
     task "clean_#{example_type[:name]}" do
