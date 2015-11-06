@@ -109,3 +109,69 @@ task docker: ["docker:lint"]
 
 desc "Run all tests and linting"
 task ci: %w(run_rspec lint)
+
+# Runs react_on_rails generators with varying options and puts each result
+# in the `examples` folder.
+namespace :examples do
+  # Define the example types you want to generate here, "name" will be
+  # used as the folder name, and options will be given as arguments
+  # to the generator.
+  EXAMPLE_TYPES = [
+    { name: "basic", generator_options: "" },
+    { name: "basic-server-rendering", options: "--server-rendering" },
+    { name: "redux", options: "--redux --server-rendering" },
+    { name: "redux-server-rendering", options: "--redux --server-rendering" }
+  ]
+
+  # Where the example folders will be placed
+  EXAMPLE_FOLDER = File.expand_path("../examples", __FILE__)
+
+  # REQUIRED_GEMS = %w()
+
+  # Options that must be included with every generator
+  # TODO: REQUIRED_GENERATOR_OPTIONS = "--dev-tests"
+  # EXAMPLE_TYPES.each do |example_type|
+  #   example_type[:options] << " #{REQUIRED_GENERATOR_OPTIONS}" # space is important
+  # end
+
+  # Define tasks for generating each example type
+  EXAMPLE_TYPES.each do |example_type|
+    desc "Generate #{example_type[:name]} example"
+    task "gen_#{example_type[:name]}" do
+      Rake::Task["examples:clean_#{example_type[:name]}"].invoke
+      mkdir_p(example_type_dir(example_type))
+      rails_options = "--skip-bundle --skip-spring --skip-git --skip-test-unit"
+      sh %(cd #{EXAMPLE_FOLDER} && rails new #{example_type[:name]} #{rails_options})
+      # sh %(cd #{example_type_dir(example_type)} && rails generate react_on_rails:install #{example_type[:options]})
+      # sh %(cd #{example_type_dir(example_type)} && bundle install)
+      # sh %(cd #{example_type_dir(example_type)} && npm install)
+    end
+  end
+
+  # Define tasks for deleting each example type folder
+  EXAMPLE_TYPES.each do |example_type|
+    desc "Delete #{example_type[:name]} example"
+    task "clean_#{example_type[:name]}" do
+      target = example_type_dir(example_type)
+      rm_rf(target) if Dir.exist?(target)
+    end
+  end
+
+  desc "Delete all examples"
+  task :clean_all do
+    rm_rf(EXAMPLE_FOLDER) if Dir.exist?(EXAMPLE_FOLDER)
+  end
+
+  desc "Generate all examples"
+  task :gen_all do
+    Rake::Task["examples:clean_all"].invoke
+    EXAMPLE_TYPES.each { |example_type| Rake::Task["examples:gen_#{example_type[:name]}"].invoke }
+  end
+
+  def example_type_dir(example_type)
+    File.join(EXAMPLE_FOLDER, example_type[:name])
+  end
+end
+
+desc "Generates all example apps. Run `rake -D examples` to see all available options"
+task examples: ["examples:gen_all"]
