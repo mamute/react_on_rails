@@ -124,7 +124,7 @@ namespace :examples do
   ]
 
   # Where the example folders will be placed
-  EXAMPLE_FOLDER = File.expand_path("../examples", __FILE__)
+  EXAMPLES_FOLDER = File.expand_path("../examples", __FILE__)
 
   REQUIRED_GEMS = [
     "gem 'react_on_rails', path: '../../.'",
@@ -139,20 +139,20 @@ namespace :examples do
 
   # Define tasks for generating each example type
   EXAMPLE_TYPES.each do |example_type|
-    desc "Generate #{example_type[:name]} example"
+    desc "Generate #{example_type[:name]} example. Pass 1 to also run npm install (defaults to false)"
     task "gen_#{example_type[:name]}" do
       Rake::Task["examples:clean_#{example_type[:name]}"].invoke
 
       mkdir_p(example_type_dir(example_type))
 
       rails_options = "--skip-bundle --skip-spring --skip-git --skip-test-unit"
-      sh %(cd #{EXAMPLE_FOLDER} && rails new #{example_type[:name]} #{rails_options})
+      sh %(cd #{EXAMPLES_FOLDER} && rails new #{example_type[:name]} #{rails_options})
 
       append_required_gems_to_gemfile(example_type_dir(example_type))
 
       sh %(cd #{example_type_dir(example_type)} && bundle install)
       sh %(cd #{example_type_dir(example_type)} && rails generate react_on_rails:install #{example_type[:options]})
-      # sh %(cd #{example_type_dir(example_type)} && npm install)
+      sh %(cd #{example_type_dir(example_type)} && npm install)
     end
   end
 
@@ -165,9 +165,9 @@ namespace :examples do
     end
   end
 
-  desc "Delete all examples"
+  desc "Delete examples folder"
   task :clean_all do
-    rm_rf(EXAMPLE_FOLDER) if Dir.exist?(EXAMPLE_FOLDER)
+    rm_rf(EXAMPLES_FOLDER) if Dir.exist?(EXAMPLES_FOLDER)
   end
 
   desc "Generate all examples"
@@ -177,7 +177,7 @@ namespace :examples do
   end
 
   def example_type_dir(example_type)
-    File.join(EXAMPLE_FOLDER, example_type[:name])
+    File.join(EXAMPLES_FOLDER, example_type[:name])
   end
 
   def append_required_gems_to_gemfile(parent_dir)
