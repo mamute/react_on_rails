@@ -1,4 +1,4 @@
-require "rails_helper"
+require_relative "../rails_helper"
 
 feature "Hello World", js: true do
   scenario "the hello world example works" do
