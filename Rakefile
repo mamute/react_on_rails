@@ -136,20 +136,21 @@ namespace :examples do
     desc "Generate #{example_type[:name]} example. Pass 1 to also run npm install (defaults to false)"
     task "gen_#{example_type[:name]}" do
       Rake::Task["examples:clean_#{example_type[:name]}"].invoke
+      example_type_dir = example_dir_for(example_type)
 
-      mkdir_p(example_type_dir(example_type))
+      mkdir_p(example_type_dir)
 
       rails_options = "--skip-bundle --skip-spring --skip-git --skip-test-unit"
-      sh %(cd #{EXAMPLES_FOLDER} && rails new #{example_type[:name]} #{rails_options})
+      sh_in_dir(EXAMPLES_FOLDER, "rails new #{example_type[:name]} #{rails_options}")
 
-      append_required_gems_to_gemfile(example_type_dir(example_type))
-
-      sh %(cd #{example_type_dir(example_type)} && bundle install)
-      sh %(cd #{example_type_dir(example_type)} && rails generate react_on_rails:install #{example_type[:options]})
-      sh %(cd #{example_type_dir(example_type)} && rails generate react_on_rails:dev_tests #{example_type[:options]})
-      sh %(cd #{example_type_dir(example_type)} && bundle install)
-      sh %(cd #{example_type_dir(example_type)} && npm install)
-      sh %(cd #{example_type_dir(example_type)}/client && webpack --config webpack.client.rails.config.js)
+      append_required_gems_to_gemfile_in(example_type_dir)
+      generator_commands = "bundle install
+                            rails generate react_on_rails:install #{example_type[:options]}
+                            rails generate react_on_rails:dev_tests #{example_type[:options]}
+                            bundle install"
+      sh_in_dir(example_dir_for(example_type), generator_commands)
+      sh_in_dir("#{example_type_dir}/client", "npm install
+                                               webpack --config webpack.client.rails.config.js")
     end
   end
 
@@ -157,7 +158,7 @@ namespace :examples do
   EXAMPLE_TYPES.each do |example_type|
     desc "Delete #{example_type[:name]} example"
     task "clean_#{example_type[:name]}" do
-      target = example_type_dir(example_type)
+      target = example_dir_for(example_type)
       rm_rf(target) if Dir.exist?(target)
     end
   end
@@ -173,15 +174,19 @@ namespace :examples do
     EXAMPLE_TYPES.each { |example_type| Rake::Task["examples:gen_#{example_type[:name]}"].invoke }
   end
 
-  def example_type_dir(example_type)
+  def example_dir_for(example_type)
     File.join(EXAMPLES_FOLDER, example_type[:name])
   end
 
-  def append_required_gems_to_gemfile(parent_dir)
+  def append_required_gems_to_gemfile_in(parent_dir)
     gemfile = File.join(parent_dir, "Gemfile")
     old_text = File.read(gemfile)
     new_text = REQUIRED_GEMS.reduce(old_text) { |a, e| a << "#{e}\n" }
     File.open(gemfile, "w") { |f| f.puts(new_text) }
+  end
+
+  def sh_in_dir(dir, shell_commands)
+    shell_commands.each_line { |shell_command| sh %(cd #{dir} && #{shell_command.strip}) }
   end
 end
 
