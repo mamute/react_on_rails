@@ -116,7 +116,7 @@ namespace :examples do
   # used as the folder name, and options will be given as arguments
   # to the generator.
   EXAMPLE_TYPES = [
-    { name: "basic", generator_options: "" },
+    { name: "basic", options: "" },
     { name: "basic-server-rendering", options: "--server-rendering" },
     { name: "redux", options: "--redux --server-rendering" },
     { name: "redux-server-rendering", options: "--redux --server-rendering" }
@@ -125,16 +125,11 @@ namespace :examples do
   # Where the example folders will be placed
   EXAMPLES_FOLDER = File.expand_path("../examples", __FILE__)
 
+  # Gems we need to add to the Gemfile before bundle installing
   REQUIRED_GEMS = [
     "gem 'react_on_rails', path: '../../.'",
     "gem 'therubyracer'"
   ]
-
-  # Options that must be included with every generator
-  # TODO: REQUIRED_GENERATOR_OPTIONS = "--dev-tests"
-  # EXAMPLE_TYPES.each do |example_type|
-  #   example_type[:options] << " #{REQUIRED_GENERATOR_OPTIONS}" # space is important
-  # end
 
   # Dynamically define tasks for generating each example type
   EXAMPLE_TYPES.each do |example_type|
@@ -151,7 +146,10 @@ namespace :examples do
 
       sh %(cd #{example_type_dir(example_type)} && bundle install)
       sh %(cd #{example_type_dir(example_type)} && rails generate react_on_rails:install #{example_type[:options]})
+      sh %(cd #{example_type_dir(example_type)} && rails generate react_on_rails:dev_tests #{example_type[:options]})
+      sh %(cd #{example_type_dir(example_type)} && bundle install)
       sh %(cd #{example_type_dir(example_type)} && npm install)
+      sh %(cd #{example_type_dir(example_type)}/client && webpack --config webpack.client.rails.config.js)
     end
   end
 
