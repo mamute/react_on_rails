@@ -8,6 +8,7 @@ describe DevTestsGenerator, type: :generator do
   it "copies rspec files" do
     %w(spec/spec_helper.rb
        spec/rails_helper.rb
+       spec/simplecov_helper.rb
        .rspec).each { |file| assert_file(file) }
   end
 

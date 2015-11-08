@@ -1,5 +1,5 @@
 require "rails/generators"
-require File.expand_path("../generator_helper", __FILE__)
+require_relative "generator_helper"
 include GeneratorHelper
 
 module ReactOnRails
@@ -11,6 +11,7 @@ module ReactOnRails
       def copy_rspec_files
         %w(spec/spec_helper.rb
            spec/rails_helper.rb
+           spec/simplecov_helper.rb
            .rspec).each { |file| copy_file(file) }
       end
 
