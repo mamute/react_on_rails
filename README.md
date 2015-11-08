@@ -50,12 +50,9 @@ Please see [Getting Started](#getting-started) for how to set up your Rails proj
         + [JavaScript Linters](#javascript-linters)
         + [Ruby Linters](#ruby-linters)
         + [Running the Linters](#running-the-linters)
-+ [Node Dependencies and NPM](#node-dependences-and-npm)
-    - [Updating](#updating)
-    - [Adding New Dependencies](#adding-new-dependences)
 + [Developing with the Webpack Dev Server](#developing-with-the-webpack-dev-server)
 + [Adding Additional Routes for the Dev Server](#adding-additional-routes-for-the-dev-server)
-+ [Manual Installation](#manual-installation)
++ [Additional Reading](#additional-reading)
 + [Contributing](#contributing)
 + [License](#license)
 + [Authors](#authors)
@@ -107,7 +104,9 @@ The generator installs your webpack files in the `client` folder. Foreman uses w
 Inside your Rails views, you can now use the `react_component` helper method provided by React on Rails.
 
 ### Client-Side Rendering vs. Server-Side Rendering
-In most cases, you should use the provided helper method to render the React component from your Rails views with `prerender: false` (default behavior). In some cases, such as when SEO is vital or many users will not have JavaScript enabled, you can pass the `--server-rendering` option to the generator to configure your application for server-side rendering. Your JavaScript can then be first rendered on the server and passed to the client as HTML.
+In most cases, you should use the `prerender: false` (default behavior) with the provided helper method to render the React component from your Rails views. In some cases, such as when SEO is vital or many users will not have JavaScript enabled, you can enable server-rendering by passing `prerender: true` to your helper, or you can simply change the default in `config/initializers/react_on_rails`. Your JavaScript can then be first rendered on the server and passed to the client as HTML.
+
+Note that **server-rendering requires globally exposing your components by setting them to `global`, not `window`** (as is the case with client-rendering). If using the generator, you can pass the `--server-rendering` option to configure your application for server-side rendering. 
 
 In the following screenshot you can see the actual HTML rendered for a side-by-side comparison of a React component left as JavaScript for the client to render followed by the same component rendered on the server to HTML along with any console error messages generated:
 
@@ -243,37 +242,6 @@ rake lint:ruby          # Run ruby-lint as shell
 rake lint:scss          # See docs for task 'scss_lint'
 ```
 
-## Node Dependencies and NPM
-### Updating
-After installing the files, you may want to update the node dependencies. This is analogous to updating gem versions:
-
-```bash
-cd client
-npm install -g npm-check-updates
-rm npm-shrinkwrap.json
-npm-check-updates -u
-npm install
-npm prune
-npm shrinkwrap
-```
-
-Confirm that the hot replacement dev server and the Rails server both work. You may have to delete `node_modules` and `npm-shrinkwrap.json` and then run `npm shrinkwrap`.
-
-*Note: `npm prune` is required before running `npm shrinkwrap` to remove dependencies that are no longer needed after doing updates.*
-
-### Adding New Dependencies
-Typically, you can add your Node dependencies as you normally would. Occasionally, adding a new dependency may require removing and re-running `npm shrinkwrap`:
-
-```bash
-cd client
-npm install --save module_name@version
-# or
-# npm install --save_dev module_name@version
-rm npm-shrinkwrap.json
-npm shrinkwrap
-```
-
-
 ## Developing with the Webpack Dev Server
 One of the benefits of using webpack is access to [webpack's dev server](https://webpack.github.io/docs/webpack-dev-server.html) and its [hot module replacement](https://webpack.github.io/docs/hot-module-replacement-with-webpack.html) functionality.
 
@@ -290,16 +258,18 @@ Note that **React-related error messages are typically significantly more helpfu
 ### Adding Additional Routes for the Dev Server
 As you add more routes to your front-end application, you will need to make the corresponding API for the dev server in `client/server.js`. See our example `server.js` from our [tutorial](https://github.com/shakacode/react-webpack-rails-tutorial/blob/master/client/server.js).
 
-## Manual Installation
-See [Manual Installation](docs/manual-installation.md) in the docs.
+## Additional Reading
++ [Generated Client Code](docs/additional_reading/generated_client_code.md)
++ [Manual Installation](docs/additional_reading/manual_installation.md)
++ [Node Dependencies and NPM](docs/additional_reading/node_dependencies_and_npm)
 
 ## Contributing
-Bug reports and pull requests are welcome. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to our version of the [Contributor Covenant](contributor-covenant.org) code of conduct (see [CODE OF CONDUCT](CODE_OF_CONDUCT.md)).
+Bug reports and pull requests are welcome. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to our version of the [Contributor Covenant](contributor-covenant.org) code of conduct (see [CODE OF CONDUCT](docs/code_of_conduct.md)).
 
-See [Contributing](docs/Contributing.md) to get started.
+See [Contributing](docs/contributing.md) to get started.
 
 ## License
-The gem is available as open source under the terms of the [MIT License](LICENSE).
+The gem is available as open source under the terms of the [MIT License](docs/LICENSE).
 
 ## Authors
 [The Shaka Code team!](http://www.shakacode.com/about/)
