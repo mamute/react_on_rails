@@ -22,14 +22,14 @@ before_install:
   - sudo apt-get install -y xvfb
 
 install:
-  - rake travis:install
+  - rake ci:install
 
 before_script:
   - "export DISPLAY=:99"
   - Xvfb :99 -ac -screen scn 1600x1200x16 &
 
 script:
-  - rake travis:run
+  - rake ci:run
 
 notifications:
   slack:

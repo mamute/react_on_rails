@@ -1,7 +1,7 @@
 require_relative "task_helpers"
 include ReactOnRails::TaskHelpers
 
-namespace :travis do
+namespace :ci do
   desc "Run all tests and linting"
   task run: [:run_rspec, :lint]
 
@@ -20,3 +20,6 @@ namespace :travis do
                          docker-compose up lint")
   end
 end
+
+desc "Runs all linters from docker. Run `rake -D docker` to see all available lint options"
+task ci: ["ci:run"]

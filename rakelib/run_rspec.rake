@@ -22,8 +22,8 @@ namespace :run_rspec do
   desc "Run RSpec for example apps only"
   task :examples do
     Dir.foreach(examples_dir) do |example_app_dir|
-      rspec_target_dir = File.join(examples_dir, examples_dir)
-      run_tests_in("", rspec_args: rspec_target_dir)
+      next if example_app_dir == "." || example_app_dir == ".."
+      run_tests_in("#{File.basename(examples_dir)}/#{File.basename(example_app_dir)}")
     end
   end
 
@@ -54,5 +54,5 @@ def run_tests_in(dir, options = {})
   rspec_args = options.fetch(:rspec_args, "")
   env_variables = %(COVERAGE=true TEST_ENV_COMMAND_NAME="#{command_name}")
   env_variables << options.fetch(:env_variables, "")
-  sh %(cd #{dir} && #{env_variables} rspec #{rspec_args})
+  sh %(cd #{dir} && #{env_variables} bundle exec rspec #{rspec_args})
 end

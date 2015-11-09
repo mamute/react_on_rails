@@ -33,14 +33,26 @@ namespace :examples do
       mkdir_p(example_type_dir)
       sh_in_dir(examples_dir, "rails new #{example_type[:name]} #{RAILS_OPTIONS}")
       append_to_gemfile_in(example_type_dir, REQUIRED_GEMS)
-      run_generator_and_build_client_bundle_for(example_type)
+      run_generator_for(example_type)
+      npm_install_for(example_type)
+      build_client_bundle_for(example_type)
+      build_server_bundle_for(example_type) if server_rendering_enabled?(example_type)
     end
   end
 
-  # Dynamically define tasks for deleting each example type folder
+  # Dynamically define tasks for cleaning each example type folder
   EXAMPLE_TYPES.each do |example_type|
     desc "Deletes #{example_type[:name]} example"
     task "clean_#{example_type[:name]}" do
+      target = example_dir_for(example_type)
+      rm_rf(target) if Dir.exist?(target)
+    end
+  end
+
+  # TODO: Dynamically define tasks for clobbering each example type folder
+  EXAMPLE_TYPES.each do |example_type|
+    desc "Deletes #{example_type[:name]} example"
+    task "clobber_#{example_type[:name]}" do
       target = example_dir_for(example_type)
       rm_rf(target) if Dir.exist?(target)
     end
@@ -78,12 +90,30 @@ def example_dir_for(example_type)
 end
 
 # Shell commands to install the example application AFTER `rails new` has been run
-def run_generator_and_build_client_bundle_for(example_type)
+def run_generator_for(example_type)
   shell_commands = "bundle install
                     rails generate react_on_rails:install #{example_type[:options]}
                     rails generate react_on_rails:dev_tests #{example_type[:options]}
-                    bundle install
-                    cd client && npm install
-                    cd client && webpack --config webpack.client.rails.config.js"
+                    bundle install"
   sh_in_dir(example_dir_for(example_type), shell_commands)
+end
+
+def client_dir_for(example_type)
+  File.join(example_dir_for(example_type), "client")
+end
+
+def npm_install_for(example_type)
+  sh_in_dir(client_dir_for(example_type), "npm install")
+end
+
+def build_client_bundle_for(example_type)
+  sh_in_dir(client_dir_for(example_type), "webpack --config webpack.client.rails.config.js")
+end
+
+def build_server_bundle_for(example_type)
+  sh_in_dir(client_dir_for(example_type), "webpack --config webpack.server.rails.config.js")
+end
+
+def server_rendering_enabled?(example_type)
+  example_type[:options].include?("--server-rendering")
 end
