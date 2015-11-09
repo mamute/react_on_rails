@@ -4,7 +4,8 @@ if ENV["COVERAGE"]
   require "simplecov"
 
   # Using a command name prevents results from getting clobbered by other test suites
-  SimpleCov.command_name(File.expand_path("../../../.", __FILE__).basename)
+  example_name = File.basename(File.expand_path("../../../.", __FILE__))
+  SimpleCov.command_name(example_name)
 
   SimpleCov.start("rails") do
     # Consider the entire gem project as the root

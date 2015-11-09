@@ -23,6 +23,7 @@ module ReactOnRails
         gem("rspec-rails", group: :test)
         gem("capybara", group: :test)
         gem("selenium-webdriver", group: :test)
+        gem("coveralls", require: false)
       end
     end
   end

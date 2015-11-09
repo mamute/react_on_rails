@@ -1,3 +1,5 @@
+require "rake/clean"
+
 require_relative "task_helpers"
 include ReactOnRails::TaskHelpers
 

@@ -54,5 +54,5 @@ def run_tests_in(dir, options = {})
   rspec_args = options.fetch(:rspec_args, "")
   env_variables = %(COVERAGE=true TEST_ENV_COMMAND_NAME="#{command_name}")
   env_variables << options.fetch(:env_variables, "")
-  sh %(cd #{dir} && #{env_variables} bundle exec rspec #{rspec_args})
+  sh %(cd #{dir} && #{env_variables} rspec #{rspec_args})
 end
