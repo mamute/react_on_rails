@@ -22,14 +22,23 @@ before_install:
   - sudo apt-get install -y xvfb
 
 install:
-  - rake ci:install
-
+  - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install 4.2.0
+  - npm install -g npm
+  - bundle install
+  - cd spec/dummy/client && npm install
+  - $(npm bin)/webpack --config webpack.server.js
+  - $(npm bin)/webpack --config webpack.client.js
+  - cd ../../dummy-react-013/client && npm install
+  - $(npm bin)/webpack --config webpack.server.js
+  - $(npm bin)/webpack --config webpack.client.js
+  - cd ../../../
+  - docker-compose up lint
 before_script:
   - "export DISPLAY=:99"
   - Xvfb :99 -ac -screen scn 1600x1200x16 &
 
 script:
-  - rake ci:run
+  - rake ci
 
 notifications:
   slack:
