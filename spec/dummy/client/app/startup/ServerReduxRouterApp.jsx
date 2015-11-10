@@ -15,7 +15,7 @@ import reducers from '../reducers/reducersIndex';
 
 import HelloWorldContainer from '../components/HelloWorldContainer';
 
-const ReduxApp = props => {
+const ReduxRouterApp = props => {
   const combinedReducer = combineReducers(reducers);
 
   // This is where we'll put in the middleware for the async function. Placeholder.
@@ -26,7 +26,7 @@ const ReduxApp = props => {
   // This allows redux to add additional props to the HelloWorldContainer.
   return (
     <Provider store={store}>
-      <HelloWorldContainer />
+      {() => <HelloWorldContainer />}
     </Provider>
   );
 };
@@ -36,4 +36,4 @@ const ReduxApp = props => {
  *  Ensure that option generator_function is set to true when invoking the helper, or as the default.
  */
 
-export default ReduxApp;
+export default ReduxRouterApp;
