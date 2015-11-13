@@ -13,10 +13,10 @@ export default class Layout extends React.Component {
         <header>
           <ul>
             <li>
-              <Link to="/server_side_redux_app_with_router">Hello World Router</Link>
+              <Link to={`${window.location.pathname}`}>Hello World Router</Link>
             </li>
             <li>
-              <Link to="/server_side_redux_app_with_router/react-router-redirect">Hello World Router Redirect</Link>
+              <Link to={`${window.location.pathname}/react-router-redirect`}>Hello World Router Redirect</Link>
             </li>
           </ul>
         </header>
