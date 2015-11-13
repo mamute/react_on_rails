@@ -88,17 +88,3 @@ This page demonstrates a few things the other pages do not show:
 </p>
 
 <%= server_render_js("this.HelloString.world()") %>
-
-<h1>Server Rendered/Redux Component With Router</h1>
-<pre>
-  <%%= react_component("ReduxRouterApp", @app_props_server_render, prerender: true, trace: true, generator_function: true) %>
-</pre>
-<%= react_component("ReduxRouterApp", @app_props_server_render, prerender: true, trace: true, generator_function: true) %>
-<hr/>
-
-<h1>Client Rendered/Redux Component With Router</h1>
-<pre>
-  <%%= react_component("ReduxRouterApp", @app_props_server_render, prerender: false, trace: true, generator_function: true) %>
-</pre>
-<%= react_component("ReduxRouterApp", @app_props_server_render, prerender: false, trace: true, generator_function: true) %>
-<hr/>

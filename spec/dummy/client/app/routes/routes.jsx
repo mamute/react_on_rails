@@ -8,29 +8,11 @@ import HelloWorldWithRouterRedirect from '../components/HelloWorldWithRouterRedi
 export default (
   <Route component={Layout}>
     <Route
-      path="/client_side_redux_app_with_router"
-      component={HelloWorldWithRouter}
-    />
-    <Route
-      path="/client_side_redux_app_with_router/react-router-redirect"
-      component={HelloWorldWithRouterRedirect}
-      onEnter={HelloWorldWithRouterRedirect.checkAuth}
-    />
-    <Route
       path="/server_side_redux_app_with_router"
       component={HelloWorldWithRouter}
     />
     <Route
       path="/server_side_redux_app_with_router/react-router-redirect"
-      component={HelloWorldWithRouterRedirect}
-      onEnter={HelloWorldWithRouterRedirect.checkAuth}
-    />
-    <Route
-      path="/"
-      component={HelloWorldWithRouter}
-    />
-    <Route
-      path="/react-router-redirect"
       component={HelloWorldWithRouterRedirect}
       onEnter={HelloWorldWithRouterRedirect.checkAuth}
     />

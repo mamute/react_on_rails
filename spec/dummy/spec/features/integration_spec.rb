@@ -47,14 +47,6 @@ feature "Pages/Index", js: true do
     context "Non-React Component" do
       scenario { is_expected.to have_content "Time to visit Maui" }
     end
-
-    context "Server Rendered/Redux Component With Router" do
-      scenario { is_expected.to have_content "React Router is working!" }
-    end
-
-    context "Client Rendered/Redux Component With Router" do
-      scenario { is_expected.to have_content "React Router is working!" }
-    end
   end
 
   context "Server Rendering with Options" do
@@ -64,4 +56,18 @@ feature "Pages/Index", js: true do
 
     include_examples "React Component", "div#my-hello-world-id"
   end
+
+  context "Server Rendered/Redux Component With Router" do
+    background do
+      visit server_side_redux_app_with_router_path
+    end
+    scenario do
+      is_expected.to have_content "React Router is working!"
+    end
+    scenario do
+      click_link "Hello World Router Redirect"
+      is_expected.to have_content "You've been redirected from "
+    end
+  end
+
 end
