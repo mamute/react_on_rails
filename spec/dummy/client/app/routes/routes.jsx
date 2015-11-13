@@ -25,5 +25,14 @@ export default (
       component={HelloWorldWithRouterRedirect}
       onEnter={HelloWorldWithRouterRedirect.checkAuth}
     />
+    <Route
+      path="/"
+      component={HelloWorldWithRouter}
+    />
+    <Route
+      path="/react-router-redirect"
+      component={HelloWorldWithRouterRedirect}
+      onEnter={HelloWorldWithRouterRedirect.checkAuth}
+    />
   </Route>
 );

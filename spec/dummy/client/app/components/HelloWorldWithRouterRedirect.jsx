@@ -6,7 +6,7 @@ export default class HelloWorldWithRouterRedirect extends React.Component {
     const notAuthorized = true;
 
     if (notAuthorized) {
-      replaceState({ redirectFrom: nextState.location.pathname }, `/${nextState.location.pathname.split("/")[1]}`);
+      replaceState({ redirectFrom: nextState.location.pathname }, `${nextState.location.pathname.replace("/react-router-redirect", "")}`);
     }
   }
 
